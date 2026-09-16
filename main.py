@@ -1,66 +1,115 @@
 import streamlit as st
 
-# 페이지 기본 설정 (타이틀, 파비콘, 레이아웃)
+# 페이지 기본 설정
 st.set_page_config(
-    page_title="💖 MBTI 뽀짝 여행지 추천소 💖",
-    page_icon="✈️",
+    page_title="🩸 ABO/Rh 혈액형 수혈 및 헌혈 가이드",
+    page_icon="🩸",
     layout="centered"
 )
 
 # 메인 타이틀 및 소개
-st.title("💖 MBTI 뽀짝 여행지 추천소 💖")
-st.caption("당신의 MBTI를 알려주면 딱 맞는 힐링 여행지를 슝슝 추천해드릴게요! (ฅ^•ﻌ•^ฅ)")
+st.title("🩸 ABO/Rh 혈액형 수혈 & 헌혈 가이드")
+st.write("혈액형을 선택하시면 수혈/헌혈 호환 정보와 안전한 헌혈을 위한 유의사항을 확인하실 수 있습니다.")
 
 st.write("---")
 
-# MBTI 목록 정의
-mbti_list = [
-    "선택해주세요!",
-    "ISTJ", "ISFJ", "INFJ", "INTJ",
-    "ISTP", "ISFP", "INFP", "INTP",
-    "ESTP", "ESFP", "ENFP", "ENTP",
-    "ESTJ", "ESFJ", "ENFJ", "ENTJ"
-]
+# 입력 섹션 (ABO 및 Rh 선택)
+col1, col2 = st.columns(2)
 
-# 귀여운 드롭다운 선택 상자
-selected_mbti = st.selectbox("✨ 당신의 MBTI를 선택해주세요! ✨", mbti_list)
+with col1:
+    rh_factor = st.radio("✨ Rh 식별", ["Rh+", "Rh-"])
 
-# MBTI별 추천 여행지 정보 사전
-recommendations = {
-    "ISTJ": {"place": "🇩🇪 독일 뮌헨", "desc": "계획적이고 차분한 당신! 질서정연하고 역사 깊은 뮌헨에서 완벽한 일정을 즐겨보세요 🏰"},
-    "ISFJ": {"place": "🇯🇵 일본 교토", "desc": "따뜻하고 배려심 깊은 당신! 고즈넉한 풍경과 아기자기한 거리에서 힐링해보아요 🍵"},
-    "INFJ": {"place": "🇨🇭 스위스 체르마트", "desc": "조용히 깊은 생각에 잠기는 당신! 알프스 산맥의 동화 같은 풍경이 마음을 가득 채워줄 거예요 🏔️"},
-    "INTJ": {"place": "🇬🇧 영국 옥스퍼드", "desc": "지적이고 호기심 많은 당신! 고풍스러운 도서관과 지식의 향기가 가득한 곳으로 떠나봐요 📚"},
-    "ISTP": {"place": "🇳🇿 뉴질랜드 퀸스타운", "desc": "조용한 액티비티 마니아! 대자연 속에서 즐기는 스릴 만점 익스트림 스포츠 🪂"},
-    "ISFP": {"place": "🇮🇹 이탈리아 피렌체", "desc": "다정한 예술가 타입! 골목마다 감성이 넘쳐나는 예술의 도시에서 인생샷 완성 🎨"},
-    "INFP": {"place": "🇮🇸 아이슬란드 레이캬비크", "desc": "몽상가이자 낭만파! 밤하늘을 수놓는 오로라를 보며 감성 충전 100% 🌌"},
-    "INTP": {"place": "🇪🇬 이집트 카이로", "desc": "호기심 천국 탐구가! 피라미드의 신비를 파헤치는 비밀스러운 여행 🐫"},
-    "ESTP": {"place": "🇺🇸 미국 라스베이거스", "desc": "에너지 넘치는 화려한 리더! 잠들지 않는 도시에서 화려한 조명과 쇼를 즐겨요 🎲"},
-    "ESFP": {"place": "🇪🇸 스페인 바르셀로나", "desc": "흥 부자 슈퍼스타! 열정적인 음악과 축제, 맛있는 타파스가 기다려요 💃"},
-    "ENFP": {"place": "🇹🇭 태국 방콕", "desc": "매일이 새로운 에너자이저! 화려한 야시장과 맛있는 길거리 음식의 천국 🍜"},
-    "ENTP": {"place": "🇹🇼 대만 타이베이", "desc": "새로운 것에 끌리는 모험가! 볼거리와 먹거리가 끊이지 않는 독특한 감성 여행 🎈"},
-    "ESTJ": {"place": "🇸🇬 싱가포르", "desc": "깔끔하고 완벽함을 추구하는 당신! 체계적이고 쾌적한 도시에서 완벽한 휴식을 🏙️"},
-    "ESFJ": {"place": "🇫🇷 프랑스 파리", "desc": "친절하고 사교적인 당신! 낭만이 흐르는 에펠탑 아래에서 사랑하는 사람들과 추억 쌓기 🥐"},
-    "ENFJ": {"place": "🇭🇺 헝가리 부다페스트", "desc": "따뜻한 리더십의 소유자! 야경이 아름다운 다뉴브 강가에서 낭만적인 밤을 보내세요 🏰"},
-    "ENTJ": {"place": "🇦🇪 아랍에미리트 두바이", "desc": "야망 가득한 멋쟁이! 세계 최고의 높이와 화려함을 자랑하는 럭셔리 여행 🏙️"}
+with col2:
+    abo_type = st.selectbox("✨ ABO 혈액형 선택", ["선택해주세요", "A형", "B형", "O형", "AB형"])
+
+st.write("---")
+
+# 정보 데이터 정의 (전혈 기준 일반적인 수혈 호환성)
+# 수혈받을 수 있는 혈액형(적혈구 기준), 헌혈해 줄 수 있는 혈액형
+compatibility_data = {
+    "Rh+ A형": {
+        "receive": ["Rh+ A형", "Rh- A형", "Rh+ O형", "Rh- O형"],
+        "give": ["Rh+ A형", "Rh+ AB형"]
+    },
+    "Rh+ B형": {
+        "receive": ["Rh+ B형", "Rh- B형", "Rh+ O형", "Rh- O형"],
+        "give": ["Rh+ B형", "Rh+ AB형"]
+    },
+    "Rh+ O형": {
+        "receive": ["Rh+ O형", "Rh- O형"],
+        "give": ["Rh+ A형", "Rh+ B형", "Rh+ O형", "Rh+ AB형"]
+    },
+    "Rh+ AB형": {
+        "receive": ["모든 ABO/Rh 혈액형 (Rh+, Rh- A/B/O/AB)"],
+        "give": ["Rh+ AB형"]
+    },
+    "Rh- A형": {
+        "receive": ["Rh- A형", "Rh- O형"],
+        "give": ["Rh+ A형", "Rh- A형", "Rh+ AB형", "Rh- AB형"]
+    },
+    "Rh- B형": {
+        "receive": ["Rh- B형", "Rh- O형"],
+        "give": ["Rh+ B형", "Rh- B형", "Rh+ AB형", "Rh- AB형"]
+    },
+    "Rh- O형": {
+        "receive": ["Rh- O형"],
+        "give": ["모든 ABO/Rh 혈액형 (적혈구 공통 가능)"]
+    },
+    "Rh- AB형": {
+        "receive": ["Rh- A형", "Rh- B형", "Rh- O형", "Rh- AB형"],
+        "give": ["Rh+ AB형", "Rh- AB형"]
+    }
 }
 
-# 결과 출력 부분
-if selected_mbti != "선택해주세요!":
-    st.write("")
-    st.success(f"🎉 **{selected_mbti}** 님을 위한 뽀짝 추천 여행지!")
+# 결과 출력
+if abo_type != "선택해주세요":
+    full_type = f"{rh_factor} {abo_type}"
+    st.subheader(f"📌 [{full_type}] 수혈 및 헌혈 가능 정보")
     
-    info = recommendations[selected_mbti]
+    info = compatibility_data.get(full_type)
     
-    # 귀여운 안내 상자
-    st.subheader(f"📍 추천 여행지: {info['place']}")
-    st.write(info['desc'])
+    col_rec, col_give = st.columns(2)
     
-    # 감성 스티커 느낌의 풍선 효과
-    st.balloons()
-else:
-    st.info("👆 위 목록에서 MBTI를 선택해 주세요! (두근두근) 💓")
+    with col_rec:
+        st.info("💉 **수혈받을 수 있는 혈액형**")
+        for item in info["receive"]:
+            st.write(f"- {item}")
+            
+    with col_give:
+        st.success("🎁 **헌혈해 줄 수 있는 대상 혈액형**")
+        for item in info["give"]:
+            st.write(f"- {item}")
+            
+    st.write("---")
 
-# 하단 귀여운 푸터
+# 헌혈 시 유의사항 섹션 (항상 표시 또는 조건부 표시)
+st.subheader("📋 안전한 헌혈을 위한 주요 유의사항")
+
+tab1, tab2, tab3 = st.tabs(["헌혈 전 확인사항", "헌혈 당일 유의사항", "헌혈 후 주의사항"])
+
+with tab1:
+    st.markdown("""
+    * **연령 및 체중 기준**
+      * 전혈 헌혈: 만 16세 ~ 69세 (체중: 남성 50kg 이상, 여성 45kg 이상)
+      * 성분 헌혈: 만 17세 ~ 69세
+    * **신분증 지참**: 주민등록증, 운전면허증, 여권 등 사진과 주민등록번호가 확인되는 신분증 필수.
+    * **약물 복용 및 치료**: 치료 목적의 약물 복용(항생제, 여드름 치료제 등)이나 침술/문신 시술 후 일정 기간 헌혈이 제한될 수 있습니다.
+    """)
+
+with tab2:
+    st.markdown("""
+    * **충분한 수분 섭취**: 헌혈 전 물을 충분히 마셔주세요.
+    * **식사 필수**: 금식 상태에서는 헌혈이 불가능하므로 꼭 식사를 하고 방문해 주세요.
+    * **음주 및 과로 금지**: 헌혈 전날 과음이나 심한 피로는 피해야 합니다.
+    """)
+
+with tab3:
+    st.markdown("""
+    * **충분한 휴식**: 헌혈 직후 헌혈 장소에서 최소 15분 이상 휴식을 취하세요.
+    * **수분 보충**: 헌혈 후 평소보다 물을 많이 섭취해 주세요.
+    * **격렬한 운동 자제**: 헌혈 당일 심한 운동, 과도한 음주, 사우나 이용은 피하셔야 합니다.
+    * **운전 및 작업 주의**: 헌혈 후 어지러움이 느꼈을 때는 즉시 주저앉아 휴식을 취해야 합니다.
+    """)
+
 st.write("---")
-st.caption("제작: 🐾 세상에서 가장 귀여운 여행 안내원 🐾")
+st.caption("⚠️ **안내**: 본 정보는 일반적인 적혈구 제제 기준 호환 정보이며, 실제 의료 현장에서는 환자의 상태 및 성분제제(백혈구, 혈장 등)에 따라 세부적인 교차시험 후 수혈이 결정됩니다.")
